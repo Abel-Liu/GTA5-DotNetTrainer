@@ -1,4 +1,5 @@
 ﻿using GTA;
+using GTA.Math;
 using GTA.Native;
 using System;
 using System.Collections.Generic;
@@ -38,15 +39,6 @@ namespace DotNetTrainer
          { "ADD CASH", NULL, NULL},
          { "NEVER WANTED", &featurePlayerNeverWanted, NULL},
           */
-            var wantedDown = new PointAction()
-            {
-                Identity = "player_wanted_down",
-            };
-
-            var wantedUp = new PointAction()
-            {
-                Identity = "player_wanted_up",
-            };
 
             var player = new Menu()
             {
@@ -54,8 +46,22 @@ namespace DotNetTrainer
                 Identity = "player",
                 Items = new MenuItem[]
                 {
-                    new MenuItem(){ Identity="main_player_wanted_up", Title="WANTED UP", PointTo=wantedUp },
-                    new MenuItem(){ Identity="main_player_wanted_down", Title="WANTED DOWN", PointTo=wantedDown },
+                    new MenuItem()
+                    {
+                        Title ="WANTED UP",
+                        PointTo = new PointAction()
+                        {
+                            Action=()=> { Game.Player.WantedLevel++; }
+                        }
+                    },
+                    new MenuItem()
+                    {
+                        Title ="WANTED DOWN",
+                        PointTo = new PointAction()
+                        {
+                            Action=()=> { Game.Player.WantedLevel--; }
+                        }
+                    },
                     new MenuItem()
                     {
                         GetTitle = ()=>{ return "INVINCIBLE  ["+ ( userInvincible?"ON":"OFF") +"]";},
@@ -99,77 +105,51 @@ namespace DotNetTrainer
             };
 
             spawner.Items.Add(new SpawnCarMenuItem("ZENTORNO"));
+            spawner.Items.Add(new SpawnCarMenuItem("BANSHEE", "女妖"));
+            spawner.Items.Add(new SpawnCarMenuItem("RHINO", "犀式坦克"));
             spawner.Items.Add(new SpawnCarMenuItem("PANTO", "微型汽車"));
+            spawner.Items.Add(new SpawnCarMenuItem("BLAZER3", "四輪摩托"));
+            spawner.Items.Add(new SpawnCarMenuItem("STRETCH", "加長轎車"));
             spawner.Items.Add(new SpawnCarMenuItem("HUNTLEY", "肯特利S"));
-            spawner.Items.Add(new SpawnCarMenuItem("EXEMPLAR"));
             spawner.Items.Add(new SpawnCarMenuItem("FQ2"));
-            spawner.Items.Add(new SpawnCarMenuItem("BUFFALO2"));
-            spawner.Items.Add(new SpawnCarMenuItem("BLAZER3"));
+            spawner.Items.Add(new SpawnCarMenuItem("TAXI"));
             spawner.Items.Add(new SpawnCarMenuItem("POLICE2"));
             spawner.Items.Add(new SpawnCarMenuItem("FBI2"));
-            spawner.Items.Add(new SpawnCarMenuItem("GRESLEY"));
-            spawner.Items.Add(new SpawnCarMenuItem("HOTKNIFE"));
-            spawner.Items.Add(new SpawnCarMenuItem("BANSHEE"));
-            spawner.Items.Add(new SpawnCarMenuItem("INSURGENT2"));
-            spawner.Items.Add(new SpawnCarMenuItem("BUFFALO"));
-            spawner.Items.Add(new SpawnCarMenuItem("BULLET"));
-            spawner.Items.Add(new SpawnCarMenuItem("COQUETTE"));
-            spawner.Items.Add(new SpawnCarMenuItem("MESA"));
-            spawner.Items.Add(new SpawnCarMenuItem("TAXI"));
+            spawner.Items.Add(new SpawnCarMenuItem("INSURGENT2", "叛亂份子"));
             spawner.Items.Add(new SpawnCarMenuItem("SUPERD"));
-            spawner.Items.Add(new SpawnCarMenuItem("POLICEB"));
-            spawner.Items.Add(new SpawnCarMenuItem("SANCHEZ2"));
-            spawner.Items.Add(new SpawnCarMenuItem("DOUBLE"));
-            spawner.Items.Add(new SpawnCarMenuItem("STRETCH", "加长轿車"));
-            spawner.Items.Add(new SpawnCarMenuItem("RHINO"));
-            spawner.Items.Add(new SpawnCarMenuItem("MESA3"));
-            spawner.Items.Add(new SpawnCarMenuItem("DUNE2"));
-            spawner.Items.Add(new SpawnCarMenuItem("SANDKING2"));
-            spawner.Items.Add(new SpawnCarMenuItem("DUBSTA3"));
-            spawner.Items.Add(new SpawnCarMenuItem("MONSTER"));
-            spawner.Items.Add(new SpawnCarMenuItem("BUFFALO3"));
-            spawner.Items.Add(new SpawnCarMenuItem("AIRTUG"));
-            spawner.Items.Add(new SpawnCarMenuItem("BFINJECTION"));
+            spawner.Items.Add(new SpawnCarMenuItem("POLICEB", "警用摩托"));
+            spawner.Items.Add(new SpawnCarMenuItem("DOUBLE", "摩托"));
+            spawner.Items.Add(new SpawnCarMenuItem("DUBSTA3", "迪布達6x6"));
+            spawner.Items.Add(new SpawnCarMenuItem("MONSTER", "大腳車"));
+            spawner.Items.Add(new SpawnCarMenuItem("AIRTUG", "行李拖車"));
             spawner.Items.Add(new SpawnCarMenuItem("RIPLEY", "機場牽引車"));
+            spawner.Items.Add(new SpawnCarMenuItem(516990260, "公共事業卡車"));
+            spawner.Items.Add(new SpawnCarMenuItem("BULLDOZER", "推土機"));
+            spawner.Items.Add(new SpawnCarMenuItem("CUTTER", "鑽洞機"));
             spawner.Items.Add(new SpawnCarMenuItem("BUS"));
             spawner.Items.Add(new SpawnCarMenuItem("COACH"));
             spawner.Items.Add(new SpawnCarMenuItem("AMBULANCE"));
-            spawner.Items.Add(new SpawnCarMenuItem("FIRETRUK"));
-            spawner.Items.Add(new SpawnCarMenuItem("BARRACKS"));
-            spawner.Items.Add(new SpawnCarMenuItem("DUMP"));
-            spawner.Items.Add(new SpawnCarMenuItem("FLATBED"));
-            spawner.Items.Add(new SpawnCarMenuItem("HAULER"));
-            spawner.Items.Add(new SpawnCarMenuItem("JOURNEY"));
-            spawner.Items.Add(new SpawnCarMenuItem("TOWTRUCK"));
-            spawner.Items.Add(new SpawnCarMenuItem("BUZZARD"));
-            spawner.Items.Add(new SpawnCarMenuItem("SAVAGE"));
-            spawner.Items.Add(new SpawnCarMenuItem("CARGOBOB3"));
-            spawner.Items.Add(new SpawnCarMenuItem("SKYLIFT"));
-            spawner.Items.Add(new SpawnCarMenuItem("MILJET"));
-            spawner.Items.Add(new SpawnCarMenuItem("JET"));
-            spawner.Items.Add(new SpawnCarMenuItem("LUXOR"));
-            spawner.Items.Add(new SpawnCarMenuItem("LAZER"));
-            spawner.Items.Add(new SpawnCarMenuItem("HYDRA"));
-            spawner.Items.Add(new SpawnCarMenuItem("DODO"));
-            spawner.Items.Add(new SpawnCarMenuItem("STUNT"));
-            spawner.Items.Add(new SpawnCarMenuItem("VESTRA"));
-            spawner.Items.Add(new SpawnCarMenuItem("BLIMP"));
-            spawner.Items.Add(new SpawnCarMenuItem("SCORCHER"));
-            spawner.Items.Add(new SpawnCarMenuItem("BULLDOZER"));
-            spawner.Items.Add(new SpawnCarMenuItem("CUTTER"));
-            spawner.Items.Add(new SpawnCarMenuItem("TRACTOR"));
-            spawner.Items.Add(new SpawnCarMenuItem("TRACTOR2"));
-            spawner.Items.Add(new SpawnCarMenuItem("BOATTRAILER"));
-            spawner.Items.Add(new SpawnCarMenuItem("ARMYTANKER"));
-            spawner.Items.Add(new SpawnCarMenuItem("SUNTRAP"));
-            spawner.Items.Add(new SpawnCarMenuItem("SQUALO"));
-            spawner.Items.Add(new SpawnCarMenuItem("DINGHY2"));
-            spawner.Items.Add(new SpawnCarMenuItem("JETMAX"));
-            spawner.Items.Add(new SpawnCarMenuItem("SEASHARK2"));
-            spawner.Items.Add(new SpawnCarMenuItem("SUBMERSIBLE"));
-            spawner.Items.Add(new SpawnCarMenuItem("RIPLEY"));
-            spawner.Items.Add(new SpawnCarMenuItem("ZTYPE"));
-
+            spawner.Items.Add(new SpawnCarMenuItem(1938952078, "消防車"));
+            spawner.Items.Add(new SpawnCarMenuItem("BARRACKS", "軍用卡車"));
+            spawner.Items.Add(new SpawnCarMenuItem("DUMP", "運土車"));
+            spawner.Items.Add(new SpawnCarMenuItem("HAULER", "卡車頭"));
+            spawner.Items.Add(new SpawnCarMenuItem("TOWTRUCK", "拖吊車"));
+            spawner.Items.Add(new SpawnCarMenuItem("BUZZARD", "小直升機"));
+            spawner.Items.Add(new SpawnCarMenuItem("SAVAGE", "大直升機"));
+            spawner.Items.Add(new SpawnCarMenuItem("CARGOBOB3", "運輸直升機"));
+            spawner.Items.Add(new SpawnCarMenuItem("MILJET", "小客機"));
+            spawner.Items.Add(new SpawnCarMenuItem("JET", "大客機"));
+            spawner.Items.Add(new SpawnCarMenuItem("LUXOR", "商務機"));
+            spawner.Items.Add(new SpawnCarMenuItem("LAZER", "戰鬥機"));
+            spawner.Items.Add(new SpawnCarMenuItem("HYDRA", "鷂式戰機"));
+            spawner.Items.Add(new SpawnCarMenuItem("DODO", "水上飛機"));
+            spawner.Items.Add(new SpawnCarMenuItem("STUNT", "特技飛機"));
+            spawner.Items.Add(new SpawnCarMenuItem("BLIMP", "汽艇"));
+            spawner.Items.Add(new SpawnCarMenuItem("SCORCHER", "自行車"));
+            spawner.Items.Add(new SpawnCarMenuItem("TRACTOR2", "農耕機"));
+            spawner.Items.Add(new SpawnCarMenuItem("DINGHY2", "救生艇"));
+            spawner.Items.Add(new SpawnCarMenuItem("SEASHARK2", "小海鯊"));
+            spawner.Items.Add(new SpawnCarMenuItem("SUBMERSIBLE", "潛艇"));
 
             //foreach (var v in Enum.GetValues(typeof(VehicleHash)))
             //{
@@ -187,8 +167,11 @@ namespace DotNetTrainer
                 {
                     Action = () =>
                     {
-                        var cars = World.GetNearbyVehicles(Game.Player.Character.Position, 50).Select(i => new KeyValuePair<string, int>(i.FriendlyName + "," + i.DisplayName, i.Model.Hash)).Distinct();
-                        nearbyCars.Items = cars.Select(i => new MenuItem() { Title = i.Key.Split(',')[0], PointTo = new PointAction() { Action = () => { logger.Log(i.Key + "," + i.Value); DotNetTrainerScript.SpawnCar((uint)i.Value); } } }).ToList();
+                        var cars = World.GetNearbyVehicles(Game.Player.Character.Position, 50)
+                            .Select(i => new VehicleInformation() { DisplayName = i.DisplayName, FriendlyName = i.FriendlyName, Hash = i.Model.Hash })
+                            .Distinct(new VehicleInformationEqualityComparer());
+
+                        nearbyCars.Items = cars.Select(i => new MenuItem() { Title = i.FriendlyName, PointTo = new PointAction() { Action = () => { LogCarInfo(i.DisplayName, i.FriendlyName, i.Hash); DotNetTrainerScript.SpawnCar((uint)i.Hash); } } }).ToList();
                         nearbyCars.Items.First().Selected = true;
                         currentMenu = nearbyCars;
                     }
@@ -225,6 +208,14 @@ namespace DotNetTrainer
                             Action = () => { wrapInSpawned = !wrapInSpawned; }
                         }
                     },
+                    //new MenuItem()
+                    //{
+                    //    GetTitle = ()=>{ return "SEATBELT  ["+ (seatbelt?"ON":"OFF") +"]";},
+                    //    PointTo = new PointAction()
+                    //    {
+                    //        Action = () => { seatbelt = !seatbelt; }
+                    //    }
+                    //},
                     nearby,
                 }.ToList()
             };
@@ -310,6 +301,10 @@ namespace DotNetTrainer
             Draw();
 
             Game.Player.Character.IsInvincible = userInvincible;
+
+            //seatbelt
+            const int PED_FLAG_CAN_FLY_THRU_WINDSCREEN = 32;
+            Function.Call(Hash.SET_PED_CONFIG_FLAG, Game.Player.Character.Handle, PED_FLAG_CAN_FLY_THRU_WINDSCREEN, false);
         }
 
         private void onKeyDown(object sender, KeyEventArgs e)
@@ -320,6 +315,41 @@ namespace DotNetTrainer
         {
             switch (e.KeyCode)
             {
+                case Keys.F6:
+                    SpawnCar("ZENTORNO");
+                    break;
+                case Keys.F7:
+                    SpawnCar("LAZER");
+                    break;
+                case Keys.F8:
+                    SpawnCar("HYDRA");
+                    break;
+                case Keys.F10:
+                    if (lastVehicleHash != 0)
+                        SpawnCar(lastVehicleHash);
+                    break;
+                case Keys.O:
+                case Keys.NumPad9://spead up
+                    {
+                        var veh = Function.Call<int>(Hash.GET_VEHICLE_PED_IS_USING, Game.Player.Character.Handle);
+                        float speed = Function.Call<float>(Hash.GET_ENTITY_SPEED, veh);
+                        if (speed < 8.0f)
+                            speed = 8.0f;
+                        speed += speed * 0.5f;
+
+                        Function.Call(Hash.SET_VEHICLE_FORWARD_SPEED, veh, speed);
+                    }
+                    break;
+                case Keys.U:
+                case Keys.NumPad3://spead down
+                    {
+                        var veh = Function.Call<int>(Hash.GET_VEHICLE_PED_IS_USING, Game.Player.Character.Handle);
+                        float speed = Function.Call<float>(Hash.GET_ENTITY_SPEED, veh);
+
+                        if (Function.Call<bool>(Hash.IS_ENTITY_IN_AIR, veh) || speed > 5.0)
+                            Function.Call(Hash.SET_VEHICLE_FORWARD_SPEED, veh, 0);
+                    }
+                    break;
                 case Keys.F4:
                     if (currentMenu == null)
                     {
@@ -400,11 +430,28 @@ namespace DotNetTrainer
                         }
                         else if (currentMenu.DrawType == DrawTypeEnum.ScreenList)
                         {
-                            var idx = currentMenu.Items.FindIndex(i => i.Selected) + 1;
-                            if (idx <= listCountPerLine)
+                            if (currentMenu.Items.Count <= listCountPerLine)
                                 return;
 
-                            var newIdx = idx - listCountPerLine;
+                            var idx = currentMenu.Items.FindIndex(i => i.Selected) + 1;
+
+                            var newIdx = 0;
+                            if (idx > listCountPerLine)
+                                newIdx = idx - listCountPerLine;
+                            else
+                            {
+                                if (currentMenu.Items.Count % listCountPerLine != 0)
+                                {
+                                    var lastCount = currentMenu.Items.Count % listCountPerLine;
+
+                                    newIdx = currentMenu.Items.Count / listCountPerLine * listCountPerLine + (lastCount >= idx ? idx : lastCount);
+                                }
+                                else
+                                {
+                                    var lastLine = currentMenu.Items.Count / listCountPerLine;
+                                    newIdx = --lastLine * listCountPerLine + idx;
+                                }
+                            }
 
                             newIdx--;
                             for (int i = 0; i < currentMenu.Items.Count; i++)
@@ -426,20 +473,30 @@ namespace DotNetTrainer
                         }
                         else if (currentMenu.DrawType == DrawTypeEnum.ScreenList)
                         {
-                            var allLine = currentMenu.Items.Count / listCountPerLine;
+                            var allLineCount = currentMenu.Items.Count / listCountPerLine;
                             if (currentMenu.Items.Count % listCountPerLine != 0)
-                                allLine++;
+                                allLineCount++;
 
-                            var idx = currentMenu.Items.FindIndex(i => i.Selected) + 1;
-                            var inLine = idx / listCountPerLine;
-                            if (idx % listCountPerLine != 0)
-                                inLine++;
-                            if (inLine == allLine)
+                            if (allLineCount == 1)
                                 return;
 
-                            var newIdx = idx + listCountPerLine;
-                            if (newIdx > currentMenu.Items.Count)
-                                newIdx = currentMenu.Items.Count;
+                            var currentIdx = currentMenu.Items.FindIndex(i => i.Selected) + 1;
+
+                            var currentLine = currentIdx / listCountPerLine;
+                            if (currentIdx % listCountPerLine != 0)
+                                currentLine++;
+
+                            int newIdx = 0;
+                            if (currentLine != allLineCount)
+                            {
+                                newIdx = currentIdx + listCountPerLine;
+                                if (newIdx > currentMenu.Items.Count)
+                                    newIdx = currentMenu.Items.Count;
+                            }
+                            else
+                            {
+                                newIdx = currentIdx % listCountPerLine;
+                            }
 
                             newIdx--;
                             for (int i = 0; i < currentMenu.Items.Count; i++)
@@ -448,6 +505,7 @@ namespace DotNetTrainer
                     }
                     break;
                 case Keys.Enter:
+                case Keys.NumPad5:
                     if (currentMenu != null)
                     {
                         var item = currentMenu.Items.Where(i => i.Selected).First();
@@ -466,6 +524,65 @@ namespace DotNetTrainer
                             action.Action();
                             if (action.CloseAllMenuAfterAction)
                                 currentMenu = null;
+                        }
+                    }
+                    break;
+                case Keys.D8://rocket
+                case Keys.D9:
+                    if (Function.Call<bool>(Hash.IS_PLAYER_CONTROL_ON, Game.Player.Handle) && Function.Call<bool>(Hash.IS_PED_IN_ANY_VEHICLE, Game.Player.Character.Handle, 0))
+                    {
+                        var weaponAssetRocket = Function.Call<int>(Hash.GET_HASH_KEY, "WEAPON_VEHICLE_ROCKET");
+                        if (!Function.Call<bool>(Hash.HAS_WEAPON_ASSET_LOADED, weaponAssetRocket))
+                        {
+                            Function.Call(Hash.REQUEST_WEAPON_ASSET, weaponAssetRocket, 31, 0);
+                            while (!Function.Call<bool>(Hash.HAS_WEAPON_ASSET_LOADED, weaponAssetRocket))
+                            { }
+                        }
+
+                        var veh = Function.Call<int>(Hash.GET_VEHICLE_PED_IS_USING, Game.Player.Character.Handle);
+
+                        var o0 = new OutputArgument();
+                        var o1 = new OutputArgument();
+                        //Get size
+                        Function.Call(Hash.GET_MODEL_DIMENSIONS, Function.Call<int>(Hash.GET_ENTITY_MODEL, veh), o0, o1);
+
+                        var vMin = o0.GetResult<Vector3>();
+                        var vMax = o1.GetResult<Vector3>();
+
+                        if (e.KeyCode == Keys.D8)
+                        {
+                            var fromForwardLeft = Function.Call<Vector3>(Hash.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS, veh, -(vMax.X + 0.25f), vMax.Y + 1.25f, 0.1);
+                            var toForwardLeft = Function.Call<Vector3>(Hash.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS, veh, -vMax.X, vMax.Y + 100.0f, 0.1f);
+
+                            var fromForwardLeft1 = Function.Call<Vector3>(Hash.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS, veh, 0, vMax.Y + 1.25f, 0.1);
+                            var toForwardLeft1 = Function.Call<Vector3>(Hash.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS, veh, 0, vMax.Y + 100.0f, 0.1f);
+
+                            var fromForwardRight = Function.Call<Vector3>(Hash.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS, veh, (vMax.X + 0.25f), vMax.Y + 1.25f, 0.1);
+                            var toForwardRight = Function.Call<Vector3>(Hash.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS, veh, vMax.X, vMax.Y + 100.0f, 0.1f);
+
+                            Function.Call(Hash.SHOOT_SINGLE_BULLET_BETWEEN_COORDS, fromForwardLeft.X, fromForwardLeft.Y, fromForwardLeft.Z, toForwardLeft.X, toForwardLeft.Y, toForwardLeft.Z, 250, 1, weaponAssetRocket, Game.Player.Character.Handle, 1, 0, -1.0);
+                            Function.Call(Hash.SHOOT_SINGLE_BULLET_BETWEEN_COORDS, fromForwardLeft1.X, fromForwardLeft1.Y, fromForwardLeft1.Z, toForwardLeft1.X, toForwardLeft1.Y, toForwardLeft1.Z, 250, 1, weaponAssetRocket, Game.Player.Character.Handle, 1, 0, -1.0);
+                            Function.Call(Hash.SHOOT_SINGLE_BULLET_BETWEEN_COORDS, fromForwardRight.X, fromForwardRight.Y, fromForwardRight.Z, toForwardRight.X, toForwardRight.Y, toForwardRight.Z, 250, 1, weaponAssetRocket, Game.Player.Character.Handle, 1, 0, -1.0);
+                        }
+                        else if (e.KeyCode == Keys.D9)
+                        {
+                            var per = (vMax.X * 2f + 20f) / 10f;
+                            for (int i = 1; i <= 10; i++)
+                            {
+                                var fromForwardLeft = Function.Call<Vector3>(Hash.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS, veh, 0, vMax.Y + 1.25f, 0.1);
+                                var toForwardLeft = Function.Call<Vector3>(Hash.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS, veh, -vMax.X - 10f + per * i, vMax.Y + 100.0f, 0.1f);
+
+                                Function.Call(Hash.SHOOT_SINGLE_BULLET_BETWEEN_COORDS, fromForwardLeft.X, fromForwardLeft.Y, fromForwardLeft.Z, toForwardLeft.X, toForwardLeft.Y, toForwardLeft.Z, 250, 1, weaponAssetRocket, Game.Player.Character.Handle, 1, 0, -1.0);
+                            }
+
+                            var fromBackwardLeft = Function.Call<Vector3>(Hash.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS, veh, -(vMax.X + 0.25f), vMin.Y + 1.25f, 0.1);
+                            var toBackwardLeft = Function.Call<Vector3>(Hash.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS, veh, -vMax.X, vMin.Y - 100.0f, 0.1f);
+
+                            var fromBackwardRight = Function.Call<Vector3>(Hash.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS, veh, (vMax.X + 0.25f), vMin.Y + 1.25f, 0.1);
+                            var toBackwardRight = Function.Call<Vector3>(Hash.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS, veh, vMax.X, vMin.Y - 100.0f, 0.1f);
+
+                            Function.Call(Hash.SHOOT_SINGLE_BULLET_BETWEEN_COORDS, fromBackwardLeft.X, fromBackwardLeft.Y, fromBackwardLeft.Z, toBackwardLeft.X, toBackwardLeft.Y, toBackwardLeft.Z, 250, 1, weaponAssetRocket, Game.Player.Character.Handle, 1, 0, -1.0);
+                            Function.Call(Hash.SHOOT_SINGLE_BULLET_BETWEEN_COORDS, fromBackwardRight.X, fromBackwardRight.Y, fromBackwardRight.Z, toBackwardRight.X, toBackwardRight.Y, toBackwardRight.Z, 250, 1, weaponAssetRocket, Game.Player.Character.Handle, 1, 0, -1.0);
                         }
                     }
                     break;
@@ -525,9 +642,12 @@ namespace DotNetTrainer
             }
         }
 
+        static uint lastVehicleHash = 0;
+
         static bool userInvincible = false;
         static bool carInvincible = false;
         static bool wrapInSpawned = false;
+        //static bool seatbelt = false;
 
         string statusText = "";
         int statusTextShowTime = 0;
@@ -578,21 +698,41 @@ namespace DotNetTrainer
             new UIRectangle(new Point(500, 50), new Size(width, 30), Color.FromArgb(255, 70, 95, 95)).Draw();
         }
 
-        public static void SpawnCar(uint hash)
+        public static void SpawnCar(string vehicleName, bool log = false)
+        {
+            var hash = Enum.Parse(typeof(VehicleHash), vehicleName, true);
+            if (hash != null)
+                SpawnCar(Convert.ToUInt32(hash), log);
+        }
+
+        public static void SpawnCar(uint hash, bool log = false)
         {
             Vehicle vehicle = World.CreateVehicle((VehicleHash)hash, Game.Player.Character.Position + Game.Player.Character.ForwardVector * 8, Game.Player.Character.Heading + 90);
             vehicle.CanTiresBurst = false;
-            vehicle.CustomPrimaryColor = Color.White;
-            vehicle.CustomSecondaryColor = Color.Black;
             vehicle.PlaceOnGround();
             vehicle.IsInvincible = carInvincible;
             vehicle.NumberPlate = "HELLO";
 
             if (wrapInSpawned)
             {
+                lastVehicleHash = hash;
                 Function.Call(Hash.SET_ENTITY_HEADING, vehicle.Handle, Game.Player.Character.Heading);
                 Function.Call(Hash.SET_PED_INTO_VEHICLE, Game.Player.Character.Handle, vehicle.Handle, -1);
+                if (log)
+                {
+                    LogCarInfo(vehicle);
+                }
             }
+        }
+
+        static void LogCarInfo(Vehicle vehicle)
+        {
+            LogCarInfo(vehicle.DisplayName, vehicle.FriendlyName, vehicle.Handle);
+        }
+
+        static void LogCarInfo(string name, string friendlyName, int hash)
+        {
+            logger.Log(friendlyName + "," + name + "," + hash);
         }
     }
 }

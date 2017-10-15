@@ -1,18 +1,35 @@
-﻿using GTA;
-using GTA.Native;
+﻿using GTA.Native;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 
 namespace DotNetTrainer
 {
     public class Logger
     {
-        public void Log(string message)
+        public void Log(object message)
         {
             File.AppendAllText("DotNetTrainer.log", DateTime.Now.ToString() + "  " + message + "\r\n");
+        }
+    }
+
+    public class VehicleInformation
+    {
+        public string DisplayName { get; set; }
+        public string FriendlyName { get; set; }
+        public int Hash { get; set; }
+    }
+
+    public class VehicleInformationEqualityComparer : IEqualityComparer<VehicleInformation>
+    {
+        public bool Equals(VehicleInformation x, VehicleInformation y)
+        {
+            return x.Hash == y.Hash;
+        }
+
+        public int GetHashCode(VehicleInformation obj)
+        {
+            return obj.Hash.GetHashCode();
         }
     }
 
@@ -75,6 +92,12 @@ namespace DotNetTrainer
 
     public class SpawnCarMenuItem : MenuItem
     {
+        public SpawnCarMenuItem(uint carHash, string frendlyName)
+        {
+            Title = frendlyName;
+            PointTo = new VehicleSpawnAction(carHash);
+        }
+
         public SpawnCarMenuItem(string carName, string frendlyName)
         {
             try
@@ -119,7 +142,7 @@ namespace DotNetTrainer
             CloseAllMenuAfterAction = true;
             Action = () =>
             {
-                DotNetTrainerScript.SpawnCar(vehicleHash);
+                DotNetTrainerScript.SpawnCar(vehicleHash, true);
             };
         }
     }
