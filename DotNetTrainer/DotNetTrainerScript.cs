@@ -33,12 +33,42 @@ namespace DotNetTrainer
         void InitMenu()
         {
             #region player
-            /*
-         { "TELEPORT", NULL, NULL},
-         { "FIX PLAYER", NULL, NULL},
-         { "ADD CASH", NULL, NULL},
-         { "NEVER WANTED", &featurePlayerNeverWanted, NULL},
-          */
+
+            var place = new Menu() { DrawType = DrawTypeEnum.NormalMenu, };
+            place.Items.Add(
+                new MenuItem()
+                {
+                    Title = "Marker",
+                    PointTo = new PointAction()
+                    {
+                        Action = () => { TeleportToMarker(); }
+                    }
+                }
+            );
+            place.Items.Add(new TeleportMenuItem("MICHAEL'S HOUSE", -852.4f, 160.0f, 65.6f));
+            place.Items.Add(new TeleportMenuItem("FRANKLIN'S HOUSE", 7.9f, 548.1f, 175.5f));
+            place.Items.Add(new TeleportMenuItem("TREVOR'S TRAILER", 1985.7f, 3812.2f, 32.2f));
+            place.Items.Add(new TeleportMenuItem("AIRPORT ENTRANCE", -1034.6f, -2733.6f, 13.8f));
+            place.Items.Add(new TeleportMenuItem("AIRPORT FIELD", -1336.0f, -3044.0f, 13.9f));
+            place.Items.Add(new TeleportMenuItem("ELYSIAN ISLAND", 338.2f, -2715.9f, 38.5f));
+            place.Items.Add(new TeleportMenuItem("JETSAM", 760.4f, -2943.2f, 5.8f));
+            place.Items.Add(new TeleportMenuItem("STRIPCLUB", 127.4f, -1307.7f, 29.2f));
+            place.Items.Add(new TeleportMenuItem("ELBURRO HEIGHTS", 1384.0f, -2057.1f, 52.0f));
+            place.Items.Add(new TeleportMenuItem("FERRIS WHEEL", -1670.7f, -1125.0f, 13.0f));
+            place.Items.Add(new TeleportMenuItem("CHUMASH", -3192.6f, 1100.0f, 20.2f));
+            place.Items.Add(new TeleportMenuItem("WINDFARM", 2354.0f, 1830.3f, 101.1f));
+            place.Items.Add(new TeleportMenuItem("MILITARY BASE", -2047.4f, 3132.1f, 32.8f));
+            place.Items.Add(new TeleportMenuItem("MCKENZIE AIRFIELD", 2121.7f, 4796.3f, 41.1f));
+            place.Items.Add(new TeleportMenuItem("DESERT AIRFIELD", 1747.0f, 3273.7f, 41.1f));
+            place.Items.Add(new TeleportMenuItem("CHILLIAD", 425.4f, 5614.3f, 766.5f));
+
+            var teleport = new MenuItem()
+            {
+                Title = "TELEPORT",
+                PointTo = place
+            };
+
+            place.FromItem = teleport;
 
             var player = new Menu()
             {
@@ -46,6 +76,7 @@ namespace DotNetTrainer
                 Identity = "player",
                 Items = new MenuItem[]
                 {
+                    teleport,
                     new MenuItem()
                     {
                         Title ="WANTED UP",
@@ -315,6 +346,9 @@ namespace DotNetTrainer
         {
             switch (e.KeyCode)
             {
+                case Keys.F3:
+                    TeleportToMarker();
+                    break;
                 case Keys.F6:
                     SpawnCar("ZENTORNO");
                     break;
@@ -589,7 +623,7 @@ namespace DotNetTrainer
             }
         }
 
-        void ShowStatusText(string text)
+        static void ShowStatusText(string text)
         {
             statusText = text;
             statusTextShowTime = 0;
@@ -616,12 +650,12 @@ namespace DotNetTrainer
                 if (currentMenu.FromItem != null)
                     title = currentMenu.FromItem.Title;
 
-                draw_menu_line(title, normalMenuWidth, normalMenuHeight, 0, 0, 5, false, true);
+                DrawMenuLine(title, normalMenuWidth, normalMenuHeight, 0, 0, 5, false, true);
                 int idx = 0;
                 foreach (var i in currentMenu.Items)
                 {
                     idx++;
-                    draw_menu_line(i.GetTitle == null ? i.Title : i.GetTitle(), normalMenuWidth, normalMenuHeight, idx * normalMenuHeight, 0, 9, i.Selected, false);
+                    DrawMenuLine(i.GetTitle == null ? i.Title : i.GetTitle(), normalMenuWidth, normalMenuHeight, idx * normalMenuHeight, 0, 9, i.Selected, false);
                 }
             }
             else if (currentMenu.DrawType == DrawTypeEnum.ScreenList)
@@ -636,7 +670,7 @@ namespace DotNetTrainer
                 int idx = 0;
                 foreach (var i in currentMenu.Items.Skip(listCountPerLine * skipLine).Take(listCountPerLine))
                 {
-                    draw_menu_line(i.GetTitle == null ? i.Title : i.GetTitle(), listItemWidth, listItemHeight, 200, 50 + idx * 120, 55 + idx * 120, i.Selected, false);
+                    DrawMenuLine(i.GetTitle == null ? i.Title : i.GetTitle(), listItemWidth, listItemHeight, 200, 50 + idx * 120, 55 + idx * 120, i.Selected, false);
                     idx++;
                 }
             }
@@ -649,18 +683,18 @@ namespace DotNetTrainer
         static bool wrapInSpawned = false;
         //static bool seatbelt = false;
 
-        string statusText = "";
-        int statusTextShowTime = 0;
-        int statusTextShowTimeMax = 80;
+        static string statusText = "";
+        static int statusTextShowTime = 0;
+        static int statusTextShowTimeMax = 80;
 
         const int normalMenuWidth = 250;
-        const int normalMenuHeight = 36;
+        const int normalMenuHeight = 30;
 
         const int listCountPerLine = 10;
         const int listItemWidth = 110;
-        const int listItemHeight = 32;
+        const int listItemHeight = 28;
 
-        void draw_menu_line(string caption, int lineWidth, int lineHeight, int lineTop, int lineLeft, int textLeft, bool active, bool title, bool rescaleText = true)
+        void DrawMenuLine(string caption, int lineWidth, int lineHeight, int lineTop, int lineLeft, int textLeft, bool active, bool title, bool rescaleText = true)
         {
             var textColor = Color.FromArgb(255, 255, 255, 255);
             var rectColor = Color.FromArgb(255, 70, 95, 95);
@@ -671,31 +705,44 @@ namespace DotNetTrainer
             var titleRectColor = Color.FromArgb(255, 0, 0, 0);
             var titleTextColor = textColor;
 
-            float text_scale = 0.35f;
+            float text_scale = 0.30f;
             int font = 0;
 
             if (active && rescaleText)
             {
-                text_scale = 0.40f;
+                text_scale = 0.35f;
             }
 
             if (title && rescaleText)
             {
-                text_scale = 0.40f;
+                text_scale = 0.35f;
                 font = 1;
             }
 
-            new UIText(caption, new Point(textLeft, lineTop + 4), text_scale, title ? titleTextColor : (active ? activeTextColor : textColor), (GTA.Font)font, false).Draw();
+            new UIText(caption, new Point(textLeft, lineTop + 3), text_scale, title ? titleTextColor : (active ? activeTextColor : textColor), (GTA.Font)font, false).Draw();
             new UIRectangle(new Point(lineLeft, lineTop), new Size(lineWidth, lineHeight), title ? titleRectColor : (active ? activeRectColor : rectColor)).Draw();
         }
 
         void DrawStatusText(string text)
         {
-            new UIText(text, new Point(520, 52), 0.35f, Color.FromArgb(255, 255, 255, 255), 0, false).Draw();
-            var width = 20 + text.Length * 9;
-            if (width < 100)
-                width = 100;
-            new UIRectangle(new Point(500, 50), new Size(width, 30), Color.FromArgb(255, 70, 95, 95)).Draw();
+            //new UIText(text, new Point(520, 52), 0.35f, Color.FromArgb(255, 255, 255, 255), 0, false).Draw();
+            //var width = 20 + text.Length * 9;
+            //if (width < 100)
+            //    width = 100;
+            //new UIRectangle(new Point(500, 50), new Size(width, 30), Color.FromArgb(255, 70, 95, 95)).Draw();
+
+            Function.Call(Hash.SET_TEXT_FONT, 0);
+            Function.Call(Hash.SET_TEXT_SCALE, 0.55, 0.55);
+            Function.Call(Hash.SET_TEXT_COLOUR, 255, 255, 255, 255);
+            Function.Call(Hash.SET_TEXT_WRAP, 0.0, 1.0);
+            Function.Call(Hash.SET_TEXT_CENTRE, 1);
+            Function.Call(Hash.SET_TEXT_DROPSHADOW, 0, 0, 0, 0, 0);
+            Function.Call(Hash.SET_TEXT_EDGE, 1, 0, 0, 0, 205);
+
+            Function.Call(Hash._SET_TEXT_ENTRY, "STRING");
+            Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, text);
+
+            Function.Call(Hash._DRAW_TEXT, 0.5, 0.5);
         }
 
         public static void SpawnCar(string vehicleName, bool log = false)
@@ -733,6 +780,73 @@ namespace DotNetTrainer
         static void LogCarInfo(string name, string friendlyName, int hash)
         {
             logger.Log(friendlyName + "," + name + "," + hash);
+        }
+
+        static void TeleportToMarker()
+        {
+            int e = Game.Player.Character.Handle;
+            if (Game.Player.Character.IsInVehicle())
+                e = Function.Call<int>(Hash.GET_VEHICLE_PED_IS_USING, Game.Player.Character.Handle);
+
+            bool blipFound = false;
+            Vector3 coords = new Vector3();
+
+            int blipIterator = Function.Call<int>(Hash._GET_BLIP_INFO_ID_ITERATOR);
+            for (int i = Function.Call<int>(Hash.GET_FIRST_BLIP_INFO_ID, blipIterator); Function.Call<bool>(Hash.DOES_BLIP_EXIST, i); i = Function.Call<int>(Hash.GET_NEXT_BLIP_INFO_ID, blipIterator))
+            {
+                if (Function.Call<int>(Hash.GET_BLIP_INFO_ID_TYPE, i) == 4)
+                {
+                    coords = Function.Call<Vector3>(Hash.GET_BLIP_INFO_ID_COORD, i);
+                    blipFound = true;
+                    break;
+                }
+            }
+
+            if (blipFound)
+            {
+                // load needed map region and check height levels for ground existence
+                bool groundFound = false;
+                float[] groundCheckHeight =
+                    {
+                        100.0f, 150.0f, 50.0f, 0.0f, 200.0f, 250.0f, 300.0f, 350.0f, 400.0f,
+                        450.0f, 500.0f, 550.0f, 600.0f, 650.0f, 700.0f, 750.0f, 800.0f
+                    };
+
+                for (int i = 0; i < groundCheckHeight.Length; i++)
+                {
+                    Function.Call(Hash.SET_ENTITY_COORDS_NO_OFFSET, e, coords.X, coords.Y, groundCheckHeight[i], 0, 0, 1);
+                    Wait(100);
+                    var z = new OutputArgument();
+                    if (Function.Call<bool>(Hash.GET_GROUND_Z_FOR_3D_COORD, coords.X, coords.Y, groundCheckHeight[i], z))
+                    {
+                        groundFound = true;
+                        coords.Z = z.GetResult<float>() + 3.0f;
+                        break;
+                    }
+                }
+
+                // if ground not found then set Z in air and give player a parachute
+                if (!groundFound)
+                {
+                    coords.Z = 1000.0f;
+                    Function.Call(Hash.GIVE_DELAYED_WEAPON_TO_PED, Game.Player.Character.Handle, 0xFBAB5776, 1, 0);
+                }
+
+                TeleportPlayer(coords.X, coords.Y, coords.Z);
+            }
+            else
+            {
+                ShowStatusText("Map marker isn't set");
+            }
+        }
+
+        public static void TeleportPlayer(float x, float y, float z)
+        {
+            int e = Game.Player.Character.Handle;
+            if (Game.Player.Character.IsInVehicle())
+                e = Function.Call<int>(Hash.GET_VEHICLE_PED_IS_USING, Game.Player.Character.Handle);
+
+            Function.Call(Hash.SET_ENTITY_COORDS_NO_OFFSET, e, x, y, z, false, false, true);
         }
     }
 }

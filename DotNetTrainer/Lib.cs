@@ -1,4 +1,5 @@
-﻿using GTA.Native;
+﻿using GTA;
+using GTA.Native;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -90,6 +91,21 @@ namespace DotNetTrainer
         public IOperate PointTo { get; set; }
     }
 
+    public class TeleportMenuItem : MenuItem
+    {
+        public TeleportMenuItem(string placeName, float x, float y, float z)
+        {
+            Title = placeName;
+            PointTo = new PointAction()
+            {
+                Action = () =>
+                {
+                    DotNetTrainerScript.TeleportPlayer(x, y, z);
+                }
+            };
+        }
+    }
+
     public class SpawnCarMenuItem : MenuItem
     {
         public SpawnCarMenuItem(uint carHash, string frendlyName)
@@ -131,8 +147,6 @@ namespace DotNetTrainer
 
     public class VehicleSpawnAction : PointAction
     {
-        int hash = 0;
-
         public VehicleSpawnAction(VehicleHash vehicleHash)
             : this((uint)vehicleHash)
         { }
