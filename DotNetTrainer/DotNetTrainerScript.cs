@@ -13,6 +13,9 @@ namespace DotNetTrainer
     {
         static Logger logger = new Logger();
 
+        /// <summary>
+        /// 所有菜单，包括子菜单
+        /// </summary>
         List<Menu> menus = new List<Menu>();
         Menu currentMenu = null;
         Menu nearbyCars = new Menu() { DrawType = DrawTypeEnum.ScreenList };
@@ -26,6 +29,7 @@ namespace DotNetTrainer
             userInvincible = true;
             carInvincible = true;
             wrapInSpawned = true;
+            weaponNoReload = true;
 
             InitMenu();
         }
@@ -48,19 +52,11 @@ namespace DotNetTrainer
             place.Items.Add(new TeleportMenuItem("MICHAEL'S HOUSE", -852.4f, 160.0f, 65.6f));
             place.Items.Add(new TeleportMenuItem("FRANKLIN'S HOUSE", 7.9f, 548.1f, 175.5f));
             place.Items.Add(new TeleportMenuItem("TREVOR'S TRAILER", 1985.7f, 3812.2f, 32.2f));
-            place.Items.Add(new TeleportMenuItem("AIRPORT ENTRANCE", -1034.6f, -2733.6f, 13.8f));
-            place.Items.Add(new TeleportMenuItem("AIRPORT FIELD", -1336.0f, -3044.0f, 13.9f));
-            place.Items.Add(new TeleportMenuItem("ELYSIAN ISLAND", 338.2f, -2715.9f, 38.5f));
-            place.Items.Add(new TeleportMenuItem("JETSAM", 760.4f, -2943.2f, 5.8f));
             place.Items.Add(new TeleportMenuItem("STRIPCLUB", 127.4f, -1307.7f, 29.2f));
-            place.Items.Add(new TeleportMenuItem("ELBURRO HEIGHTS", 1384.0f, -2057.1f, 52.0f));
             place.Items.Add(new TeleportMenuItem("FERRIS WHEEL", -1670.7f, -1125.0f, 13.0f));
-            place.Items.Add(new TeleportMenuItem("CHUMASH", -3192.6f, 1100.0f, 20.2f));
-            place.Items.Add(new TeleportMenuItem("WINDFARM", 2354.0f, 1830.3f, 101.1f));
             place.Items.Add(new TeleportMenuItem("MILITARY BASE", -2047.4f, 3132.1f, 32.8f));
-            place.Items.Add(new TeleportMenuItem("MCKENZIE AIRFIELD", 2121.7f, 4796.3f, 41.1f));
-            place.Items.Add(new TeleportMenuItem("DESERT AIRFIELD", 1747.0f, 3273.7f, 41.1f));
             place.Items.Add(new TeleportMenuItem("CHILLIAD", 425.4f, 5614.3f, 766.5f));
+            place.Items.Add(new TeleportMenuItem("警察局", 807.2786f, -1277.551f, 25.96281f));
 
             var teleport = new MenuItem()
             {
@@ -104,6 +100,19 @@ namespace DotNetTrainer
                             }
                         }
                     },
+                    new MenuItem()
+                    {
+                        Title = "GET PLAYER POSITION",
+                        PointTo = new PointAction()
+                        {
+                            Action = () =>
+                            {
+                                var p=Game.Player.Character.Position;
+                                ShowStatusText(p.ToString());
+                                logger.Log(p.X+"f,"+p.Y+"f,"+p.Z+"f");
+                            }
+                        }
+                    }
                 }.ToList()
             };
 
@@ -115,12 +124,9 @@ namespace DotNetTrainer
             {
                 Action = () =>
                 {
-                    var playerPed = Function.Call<int>(Hash.PLAYER_PED_ID);
-                    bool bPlayerExists = Function.Call<bool>(Hash.DOES_ENTITY_EXIST, playerPed);
-
-                    if (Function.Call<bool>(Hash.IS_PED_IN_ANY_VEHICLE, playerPed, 0))
+                    if (Function.Call<bool>(Hash.IS_PED_IN_ANY_VEHICLE, Game.Player.Character.Handle, 0))
                     {
-                        Function.Call(Hash.SET_VEHICLE_FIXED, Function.Call<int>(Hash.GET_VEHICLE_PED_IS_USING, playerPed));
+                        Function.Call(Hash.SET_VEHICLE_FIXED, Function.Call<int>(Hash.GET_VEHICLE_PED_IS_USING, Game.Player.Character.Handle));
                     }
                     else
                     {
@@ -135,18 +141,29 @@ namespace DotNetTrainer
                 Identity = "vehicle_spawner",
             };
 
+            //至尊慧眼,COGCABRI,57346                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+            //愛國者,PATRIOT,-808457413
+            //愛快,ALPHA,57346
+            //公路霸者,DOMINATO,80636076
+            //貨機,CARGOPL,368211810
+            //碼頭裝卸車,HANDLER,82434
+            //FIB 公務車, FBI,154882
+            //泰坦號,TITAN,73218
+
             spawner.Items.Add(new SpawnCarMenuItem("ZENTORNO"));
             spawner.Items.Add(new SpawnCarMenuItem("BANSHEE", "女妖"));
+            spawner.Items.Add(new SpawnCarMenuItem("INSURGENT2", "叛亂份子"));
             spawner.Items.Add(new SpawnCarMenuItem("RHINO", "犀式坦克"));
-            spawner.Items.Add(new SpawnCarMenuItem("PANTO", "微型汽車"));
             spawner.Items.Add(new SpawnCarMenuItem("BLAZER3", "四輪摩托"));
             spawner.Items.Add(new SpawnCarMenuItem("STRETCH", "加長轎車"));
             spawner.Items.Add(new SpawnCarMenuItem("HUNTLEY", "肯特利S"));
             spawner.Items.Add(new SpawnCarMenuItem("FQ2"));
             spawner.Items.Add(new SpawnCarMenuItem("TAXI"));
             spawner.Items.Add(new SpawnCarMenuItem("POLICE2"));
+
             spawner.Items.Add(new SpawnCarMenuItem("FBI2"));
-            spawner.Items.Add(new SpawnCarMenuItem("INSURGENT2", "叛亂份子"));
+            spawner.Items.Add(new SpawnCarMenuItem("ISSI2", "天威"));
+            spawner.Items.Add(new SpawnCarMenuItem("PANTO", "微型汽車"));
             spawner.Items.Add(new SpawnCarMenuItem("SUPERD"));
             spawner.Items.Add(new SpawnCarMenuItem("POLICEB", "警用摩托"));
             spawner.Items.Add(new SpawnCarMenuItem("DOUBLE", "摩托"));
@@ -155,6 +172,7 @@ namespace DotNetTrainer
             spawner.Items.Add(new SpawnCarMenuItem("AIRTUG", "行李拖車"));
             spawner.Items.Add(new SpawnCarMenuItem("RIPLEY", "機場牽引車"));
             spawner.Items.Add(new SpawnCarMenuItem(516990260, "公共事業卡車"));
+
             spawner.Items.Add(new SpawnCarMenuItem("BULLDOZER", "推土機"));
             spawner.Items.Add(new SpawnCarMenuItem("CUTTER", "鑽洞機"));
             spawner.Items.Add(new SpawnCarMenuItem("BUS"));
@@ -165,10 +183,10 @@ namespace DotNetTrainer
             spawner.Items.Add(new SpawnCarMenuItem("DUMP", "運土車"));
             spawner.Items.Add(new SpawnCarMenuItem("HAULER", "卡車頭"));
             spawner.Items.Add(new SpawnCarMenuItem("TOWTRUCK", "拖吊車"));
+
             spawner.Items.Add(new SpawnCarMenuItem("BUZZARD", "小直升機"));
             spawner.Items.Add(new SpawnCarMenuItem("SAVAGE", "大直升機"));
             spawner.Items.Add(new SpawnCarMenuItem("CARGOBOB3", "運輸直升機"));
-            spawner.Items.Add(new SpawnCarMenuItem("MILJET", "小客機"));
             spawner.Items.Add(new SpawnCarMenuItem("JET", "大客機"));
             spawner.Items.Add(new SpawnCarMenuItem("LUXOR", "商務機"));
             spawner.Items.Add(new SpawnCarMenuItem("LAZER", "戰鬥機"));
@@ -176,40 +194,16 @@ namespace DotNetTrainer
             spawner.Items.Add(new SpawnCarMenuItem("DODO", "水上飛機"));
             spawner.Items.Add(new SpawnCarMenuItem("STUNT", "特技飛機"));
             spawner.Items.Add(new SpawnCarMenuItem("BLIMP", "汽艇"));
+
             spawner.Items.Add(new SpawnCarMenuItem("SCORCHER", "自行車"));
             spawner.Items.Add(new SpawnCarMenuItem("TRACTOR2", "農耕機"));
             spawner.Items.Add(new SpawnCarMenuItem("DINGHY2", "救生艇"));
             spawner.Items.Add(new SpawnCarMenuItem("SEASHARK2", "小海鯊"));
             spawner.Items.Add(new SpawnCarMenuItem("SUBMERSIBLE", "潛艇"));
 
-            //foreach (var v in Enum.GetValues(typeof(VehicleHash)))
-            //{
-            //    var hash = (VehicleHash)Convert.ToUInt32(v);
-            //    spawner.Items.Add(new MenuItem() { Title = hash.ToString(), PointTo = new VehicleSpawnAction(hash) });
-            //}
 
             var spawnerEntry = new MenuItem() { Identity = "main_vehicle_spawner", Title = "CAR SPAWNER", PointTo = spawner };
             spawner.FromItem = spawnerEntry;
-
-            var nearby = new MenuItem()
-            {
-                Title = "SHOW NEARBY CARS",
-                PointTo = new PointAction()
-                {
-                    Action = () =>
-                    {
-                        var cars = World.GetNearbyVehicles(Game.Player.Character.Position, 50)
-                            .Select(i => new VehicleInformation() { DisplayName = i.DisplayName, FriendlyName = i.FriendlyName, Hash = i.Model.Hash })
-                            .Distinct(new VehicleInformationEqualityComparer());
-
-                        nearbyCars.Items = cars.Select(i => new MenuItem() { Title = i.FriendlyName, PointTo = new PointAction() { Action = () => { LogCarInfo(i.DisplayName, i.FriendlyName, i.Hash); DotNetTrainerScript.SpawnCar((uint)i.Hash); } } }).ToList();
-                        nearbyCars.Items.First().Selected = true;
-                        currentMenu = nearbyCars;
-                    }
-                }
-            };
-
-            nearbyCars.FromItem = nearby;
 
             var vehicle = new Menu()
             {
@@ -247,9 +241,58 @@ namespace DotNetTrainer
                     //        Action = () => { seatbelt = !seatbelt; }
                     //    }
                     //},
-                    nearby,
                 }.ToList()
             };
+            #endregion
+
+            #region weapon
+
+
+            var weapon = new Menu()
+            {
+                DrawType = DrawTypeEnum.NormalMenu,
+                Identity = "weapon",
+                Items = new MenuItem[]
+                {
+                    new MenuItem()
+                    {
+                        Title ="GET ALL WEAPON",
+                        PointTo = new PointAction()
+                        {
+                            Action = () =>
+                            {
+                                foreach(uint v in Enum.GetValues(typeof(WeaponHash)))
+                                {
+                                    Game.Player.Character.Weapons.Give((WeaponHash)v, 1000, false, true);
+                                }
+                            }
+                        }
+                    },
+                    new MenuItem()
+                    {
+                        Title ="REMOVE ALL WEAPON",
+                        PointTo = new PointAction()
+                        {
+                            Action = () =>
+                            {
+                                Game.Player.Character.Weapons.RemoveAll();
+                            }
+                        }
+                    },
+                    new MenuItem()
+                    {
+                        GetTitle = ()=>{ return "NO RELOAD  ["+ (weaponNoReload?"ON":"OFF") +"]";},
+                        PointTo = new PointAction()
+                        {
+                            Action = () =>
+                            {
+                                weaponNoReload = !weaponNoReload;
+                            }
+                        }
+                    },
+                }.ToList()
+            };
+
             #endregion
 
             #region time
@@ -296,7 +339,26 @@ namespace DotNetTrainer
 
             var main_player = new MenuItem() { Identity = "main_player", Title = "PLAYER", PointTo = player };
             var main_vehicle = new MenuItem() { Identity = "main_vehicle", Title = "VEHICLE", PointTo = vehicle };
+            var main_weapon = new MenuItem() { Identity = "main_weapon", Title = "WEAPON", PointTo = weapon };
             var main_time = new MenuItem() { Identity = "main_time", Title = "TIME", PointTo = time };
+
+            var nearby = new MenuItem()
+            {
+                Title = "SHOW NEARBY CARS",
+                PointTo = new PointAction()
+                {
+                    Action = () =>
+                    {
+                        var cars = World.GetNearbyVehicles(Game.Player.Character.Position, 50)
+                            .Select(i => new VehicleInformation() { DisplayName = i.DisplayName, FriendlyName = i.FriendlyName, Hash = i.Model.Hash })
+                            .Distinct(new VehicleInformationEqualityComparer());
+
+                        nearbyCars.Items = cars.Select(i => new MenuItem() { Title = i.FriendlyName, PointTo = new PointAction() { Action = () => { LogCarInfo(i.DisplayName, i.FriendlyName, i.Hash); DotNetTrainerScript.SpawnCar((uint)i.Hash); } } }).ToList();
+                        nearbyCars.Items.First().Selected = true;
+                        currentMenu = nearbyCars;
+                    }
+                }
+            };
 
             var main = new Menu()
             {
@@ -306,13 +368,17 @@ namespace DotNetTrainer
                 {
                     main_player,
                     main_vehicle,
+                    main_weapon,
                     main_time,
+                    nearby,
                 }.ToList()
             };
             #endregion
 
             vehicle.FromItem = main_vehicle;
             player.FromItem = main_player;
+            time.FromItem = main_time;
+            weapon.FromItem = main_weapon;
 
             AddMenu(main);
         }
@@ -327,11 +393,39 @@ namespace DotNetTrainer
             }
         }
 
+        void SetWeaponNoReload()
+        {
+            if (PlayerExists() && weaponNoReload)
+            {
+                var playerPed = Game.Player.Character.Handle;
+                var o = new OutputArgument();
+                if (Function.Call<bool>(Hash.GET_CURRENT_PED_WEAPON, playerPed, o, 1))
+                {
+                    var cur = o.GetResult<uint>();
+                    if (Function.Call<bool>(Hash.IS_WEAPON_VALID, cur))
+                    {
+                        o = new OutputArgument();
+                        if (Function.Call<bool>(Hash.GET_MAX_AMMO, playerPed, cur, o))
+                        {
+                            int maxAmmo = o.GetResult<int>();
+                            Function.Call(Hash.SET_PED_AMMO, playerPed, cur, maxAmmo);
+
+                            maxAmmo = Function.Call<int>(Hash.GET_MAX_AMMO_IN_CLIP, playerPed, cur, 1);
+                            if (maxAmmo > 0)
+                                Function.Call(Hash.SET_AMMO_IN_CLIP, playerPed, cur, maxAmmo);
+                        }
+                    }
+                }
+            }
+        }
+
         private void onTick(object sender, EventArgs e)//每几毫秒调用
         {
             Draw();
 
             Game.Player.Character.IsInvincible = userInvincible;
+
+            SetWeaponNoReload();
 
             //seatbelt
             const int PED_FLAG_CAN_FLY_THRU_WINDSCREEN = 32;
@@ -351,9 +445,6 @@ namespace DotNetTrainer
                     break;
                 case Keys.F6:
                     SpawnCar("ZENTORNO");
-                    break;
-                case Keys.F7:
-                    SpawnCar("LAZER");
                     break;
                 case Keys.F8:
                     SpawnCar("HYDRA");
@@ -562,7 +653,7 @@ namespace DotNetTrainer
                     }
                     break;
                 case Keys.D8://rocket
-                case Keys.D9:
+                case Keys.D9://try amazing rocket
                     if (Function.Call<bool>(Hash.IS_PLAYER_CONTROL_ON, Game.Player.Handle) && Function.Call<bool>(Hash.IS_PED_IN_ANY_VEHICLE, Game.Player.Character.Handle, 0))
                     {
                         var weaponAssetRocket = Function.Call<int>(Hash.GET_HASH_KEY, "WEAPON_VEHICLE_ROCKET");
@@ -629,6 +720,9 @@ namespace DotNetTrainer
             statusTextShowTime = 0;
         }
 
+        /// <summary>
+        /// 画出需要显示的内容
+        /// </summary>
         void Draw()
         {
             if (!string.IsNullOrEmpty(statusText))
@@ -681,6 +775,7 @@ namespace DotNetTrainer
         static bool userInvincible = false;
         static bool carInvincible = false;
         static bool wrapInSpawned = false;
+        static bool weaponNoReload = false;
         //static bool seatbelt = false;
 
         static string statusText = "";
@@ -694,6 +789,18 @@ namespace DotNetTrainer
         const int listItemWidth = 110;
         const int listItemHeight = 28;
 
+        /// <summary>
+        /// 根据计算好的位置画一个菜单项
+        /// </summary>
+        /// <param name="caption"></param>
+        /// <param name="lineWidth"></param>
+        /// <param name="lineHeight"></param>
+        /// <param name="lineTop"></param>
+        /// <param name="lineLeft"></param>
+        /// <param name="textLeft"></param>
+        /// <param name="active"></param>
+        /// <param name="title"></param>
+        /// <param name="rescaleText"></param>
         void DrawMenuLine(string caption, int lineWidth, int lineHeight, int lineTop, int lineLeft, int textLeft, bool active, bool title, bool rescaleText = true)
         {
             var textColor = Color.FromArgb(255, 255, 255, 255);
@@ -743,6 +850,11 @@ namespace DotNetTrainer
             Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, text);
 
             Function.Call(Hash._DRAW_TEXT, 0.5, 0.5);
+        }
+
+        bool PlayerExists()
+        {
+            return Function.Call<bool>(Hash.DOES_ENTITY_EXIST, Game.Player.Character.Handle);
         }
 
         public static void SpawnCar(string vehicleName, bool log = false)

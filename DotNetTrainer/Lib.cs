@@ -36,7 +36,14 @@ namespace DotNetTrainer
 
     public enum DrawTypeEnum
     {
+        /// <summary>
+        /// 普通菜单
+        /// </summary>
         NormalMenu = 0,
+
+        /// <summary>
+        /// 铺在屏幕中的横向列表
+        /// </summary>
         ScreenList = 1
     }
 
@@ -50,16 +57,28 @@ namespace DotNetTrainer
         public string Identity { get; set; }
     }
 
+    /// <summary>
+    /// 一个菜单，包含若干菜单项
+    /// </summary>
     public class Menu : BaseEntity, IOperate
     {
+        /// <summary>
+        /// 从某个菜单项进入此菜单
+        /// </summary>
         public MenuItem FromItem { get; set; }
 
         public DrawTypeEnum DrawType { get; set; }
 
+        /// <summary>
+        /// IOperate成员，指示当前IOperate是打开一个菜单还是执行某个操作
+        /// </summary>
         public bool IsMenu => true;
 
         private List<MenuItem> items = new List<MenuItem>();
 
+        /// <summary>
+        /// 包含的菜单项
+        /// </summary>
         public List<MenuItem> Items
         {
             get
@@ -72,15 +91,24 @@ namespace DotNetTrainer
         }
     }
 
+    /// <summary>
+    /// 菜单中的一项，包含标题、指向的操作等
+    /// </summary>
     public class MenuItem : BaseEntity
     {
         /// <summary>
-        /// 不用手动赋值
+        /// 所属菜单，不用手动赋值
         /// </summary>
         public Menu Menu { get; set; }
 
+        /// <summary>
+        /// 标题，若GetTitle为null则显示此标题
+        /// </summary>
         public string Title { get; set; }
 
+        /// <summary>
+        /// 需要动态显示的标题
+        /// </summary>
         public Func<string> GetTitle { get; set; }
 
         /// <summary>
@@ -88,9 +116,15 @@ namespace DotNetTrainer
         /// </summary>
         public bool Selected { get; set; } = false;
 
+        /// <summary>
+        /// 指向的操作，打开菜单(Menu) 或 执行操作(PointAction)
+        /// </summary>
         public IOperate PointTo { get; set; }
     }
 
+    /// <summary>
+    /// 菜单项，特用于传送到某处
+    /// </summary>
     public class TeleportMenuItem : MenuItem
     {
         public TeleportMenuItem(string placeName, float x, float y, float z)
@@ -106,6 +140,9 @@ namespace DotNetTrainer
         }
     }
 
+    /// <summary>
+    /// 菜单项，特用于获取某车辆
+    /// </summary>
     public class SpawnCarMenuItem : MenuItem
     {
         public SpawnCarMenuItem(uint carHash, string frendlyName)
@@ -133,6 +170,9 @@ namespace DotNetTrainer
         { }
     }
 
+    /// <summary>
+    /// 菜单项点击后不打开新菜单，而是执行某个操作
+    /// </summary>
     public class PointAction : BaseEntity, IOperate
     {
         public bool IsMenu => false;
@@ -145,6 +185,9 @@ namespace DotNetTrainer
         public bool CloseAllMenuAfterAction { get; set; } = false;
     }
 
+    /// <summary>
+    /// 获取车辆的操作
+    /// </summary>
     public class VehicleSpawnAction : PointAction
     {
         public VehicleSpawnAction(VehicleHash vehicleHash)
