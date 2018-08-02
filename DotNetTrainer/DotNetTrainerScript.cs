@@ -150,7 +150,6 @@ namespace DotNetTrainer
             //FIB 公務車, FBI,154882
             //泰坦號,TITAN,73218
 
-            spawner.Items.Add(new SpawnCarMenuItem("ZENTORNO"));
             spawner.Items.Add(new SpawnCarMenuItem("BANSHEE", "女妖"));
             spawner.Items.Add(new SpawnCarMenuItem("INSURGENT2", "叛亂份子"));
             spawner.Items.Add(new SpawnCarMenuItem("RHINO", "犀式坦克"));
@@ -160,8 +159,8 @@ namespace DotNetTrainer
             spawner.Items.Add(new SpawnCarMenuItem("FQ2"));
             spawner.Items.Add(new SpawnCarMenuItem("TAXI"));
             spawner.Items.Add(new SpawnCarMenuItem("POLICE2"));
-
             spawner.Items.Add(new SpawnCarMenuItem("FBI2"));
+
             spawner.Items.Add(new SpawnCarMenuItem("ISSI2", "天威"));
             spawner.Items.Add(new SpawnCarMenuItem("PANTO", "微型汽車"));
             spawner.Items.Add(new SpawnCarMenuItem("SUPERD"));
@@ -171,14 +170,14 @@ namespace DotNetTrainer
             spawner.Items.Add(new SpawnCarMenuItem("MONSTER", "大腳車"));
             spawner.Items.Add(new SpawnCarMenuItem("AIRTUG", "行李拖車"));
             spawner.Items.Add(new SpawnCarMenuItem("RIPLEY", "機場牽引車"));
-            spawner.Items.Add(new SpawnCarMenuItem(516990260, "公共事業卡車"));
+            spawner.Items.Add(new SpawnCarMenuItem(VehicleHash.UtilityTruck, "公共事業卡車"));
 
             spawner.Items.Add(new SpawnCarMenuItem("BULLDOZER", "推土機"));
             spawner.Items.Add(new SpawnCarMenuItem("CUTTER", "鑽洞機"));
             spawner.Items.Add(new SpawnCarMenuItem("BUS"));
             spawner.Items.Add(new SpawnCarMenuItem("COACH"));
             spawner.Items.Add(new SpawnCarMenuItem("AMBULANCE"));
-            spawner.Items.Add(new SpawnCarMenuItem(1938952078, "消防車"));
+            spawner.Items.Add(new SpawnCarMenuItem(VehicleHash.FireTruck, "消防車"));
             spawner.Items.Add(new SpawnCarMenuItem("BARRACKS", "軍用卡車"));
             spawner.Items.Add(new SpawnCarMenuItem("DUMP", "運土車"));
             spawner.Items.Add(new SpawnCarMenuItem("HAULER", "卡車頭"));
@@ -193,14 +192,17 @@ namespace DotNetTrainer
             spawner.Items.Add(new SpawnCarMenuItem("HYDRA", "鷂式戰機"));
             spawner.Items.Add(new SpawnCarMenuItem("DODO", "水上飛機"));
             spawner.Items.Add(new SpawnCarMenuItem("STUNT", "特技飛機"));
-            spawner.Items.Add(new SpawnCarMenuItem("BLIMP", "汽艇"));
+            spawner.Items.Add(new SpawnCarMenuItem(VehicleHash.CargoPlane, "運輸機"));
+            spawner.Items.Add(new SpawnCarMenuItem("spirit", "轟炸機"));
+            spawner.Items.Add(new SpawnCarMenuItem("j15a", "殲15"));
 
+            spawner.Items.Add(new SpawnCarMenuItem("BLIMP", "汽艇"));
             spawner.Items.Add(new SpawnCarMenuItem("SCORCHER", "自行車"));
             spawner.Items.Add(new SpawnCarMenuItem("TRACTOR2", "農耕機"));
             spawner.Items.Add(new SpawnCarMenuItem("DINGHY2", "救生艇"));
             spawner.Items.Add(new SpawnCarMenuItem("SEASHARK2", "小海鯊"));
             spawner.Items.Add(new SpawnCarMenuItem("SUBMERSIBLE", "潛艇"));
-
+            spawner.Items.Add(new SpawnCarMenuItem("satoca", "SATOCA"));
 
             var spawnerEntry = new MenuItem() { Identity = "main_vehicle_spawner", Title = "CAR SPAWNER", PointTo = spawner };
             spawner.FromItem = spawnerEntry;
@@ -770,7 +772,7 @@ namespace DotNetTrainer
             }
         }
 
-        static uint lastVehicleHash = 0;
+        static Model lastVehicleHash = 0;
 
         static bool userInvincible = false;
         static bool carInvincible = false;
@@ -857,24 +859,28 @@ namespace DotNetTrainer
             return Function.Call<bool>(Hash.DOES_ENTITY_EXIST, Game.Player.Character.Handle);
         }
 
-        public static void SpawnCar(string vehicleName, bool log = false)
+        public static void SpawnCar(string name, bool log = false)
         {
-            var hash = Enum.Parse(typeof(VehicleHash), vehicleName, true);
-            if (hash != null)
-                SpawnCar(Convert.ToUInt32(hash), log);
+            SpawnCar(new Model(name), log);
         }
 
         public static void SpawnCar(uint hash, bool log = false)
         {
-            Vehicle vehicle = World.CreateVehicle((VehicleHash)hash, Game.Player.Character.Position + Game.Player.Character.ForwardVector * 8, Game.Player.Character.Heading + 90);
+            SpawnCar((VehicleHash)hash, log);
+        }
+
+        static void SpawnCar(Model model, bool log = false)
+        {
+            Vehicle vehicle = World.CreateVehicle(model, Game.Player.Character.Position + Game.Player.Character.ForwardVector * 8, Game.Player.Character.Heading + 90);
             vehicle.CanTiresBurst = false;
             vehicle.PlaceOnGround();
             vehicle.IsInvincible = carInvincible;
             vehicle.NumberPlate = "HELLO";
 
+            lastVehicleHash = model;
+
             if (wrapInSpawned)
             {
-                lastVehicleHash = hash;
                 Function.Call(Hash.SET_ENTITY_HEADING, vehicle.Handle, Game.Player.Character.Heading);
                 Function.Call(Hash.SET_PED_INTO_VEHICLE, Game.Player.Character.Handle, vehicle.Handle, -1);
                 if (log)

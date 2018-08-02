@@ -145,6 +145,12 @@ namespace DotNetTrainer
     /// </summary>
     public class SpawnCarMenuItem : MenuItem
     {
+        public SpawnCarMenuItem(VehicleHash carHash, string frendlyName)
+        {
+            Title = frendlyName;
+            PointTo = new VehicleSpawnAction(carHash);
+        }
+
         public SpawnCarMenuItem(uint carHash, string frendlyName)
         {
             Title = frendlyName;
@@ -153,16 +159,19 @@ namespace DotNetTrainer
 
         public SpawnCarMenuItem(string carName, string frendlyName)
         {
-            try
-            {
-                var hash = Enum.Parse(typeof(VehicleHash), carName, true);
-                if (hash != null)
-                {
-                    Title = frendlyName;
-                    PointTo = new VehicleSpawnAction(Convert.ToUInt32(hash));
-                }
-            }
-            catch { }
+            Title = frendlyName;
+            //try
+            //{
+            //    var hash = Enum.Parse(typeof(VehicleHash), carName, true);
+            //    if (hash != null)
+            //        PointTo = new VehicleSpawnAction(Convert.ToUInt32(hash));
+            //}
+            //catch (Exception e)
+            //{
+            //    PointTo = new VehicleSpawnAction(carName);
+            //}
+
+            PointTo = new VehicleSpawnAction(carName);
         }
 
         public SpawnCarMenuItem(string carName)
@@ -200,6 +209,15 @@ namespace DotNetTrainer
             Action = () =>
             {
                 DotNetTrainerScript.SpawnCar(vehicleHash, true);
+            };
+        }
+
+        public VehicleSpawnAction(string vehicleName)
+        {
+            CloseAllMenuAfterAction = true;
+            Action = () =>
+            {
+                DotNetTrainerScript.SpawnCar(vehicleName, true);
             };
         }
     }
